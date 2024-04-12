@@ -36,7 +36,7 @@
 		132652DC244784F1003FDA45 /* DefaultConfigurationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132652DB244784F1003FDA45 /* DefaultConfigurationService.swift */; };
 		132652E52447B861003FDA45 /* DefaultVersionJournalingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132652E42447B861003FDA45 /* DefaultVersionJournalingService.swift */; };
 		132652E82447B9B7003FDA45 /* VersionJournalingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132652E72447B9B7003FDA45 /* VersionJournalingService.swift */; };
-		132652EA2447BA3B003FDA45 /* VersionJournalingServiceResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132652E92447BA3B003FDA45 /* VersionJournalingServiceResult.swift */; };
+		132652EA2447BA3B003FDA45 /* AppUpdatedResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 132652E92447BA3B003FDA45 /* AppUpdatedResult.swift */; };
 		138018F222FC7D96008FC6D4 /* Updates+UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138018F022FC7D82008FC6D4 /* Updates+UIDevice.swift */; };
 		138B3515220B187700BB506A /* Versions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B3513220B187200BB506A /* Versions.swift */; };
 		138B3517220B18A000BB506A /* Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = 138B3516220B18A000BB506A /* Build.swift */; };
@@ -104,7 +104,7 @@
 		132652DB244784F1003FDA45 /* DefaultConfigurationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultConfigurationService.swift; sourceTree = "<group>"; };
 		132652E42447B861003FDA45 /* DefaultVersionJournalingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultVersionJournalingService.swift; sourceTree = "<group>"; };
 		132652E72447B9B7003FDA45 /* VersionJournalingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionJournalingService.swift; sourceTree = "<group>"; };
-		132652E92447BA3B003FDA45 /* VersionJournalingServiceResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionJournalingServiceResult.swift; sourceTree = "<group>"; };
+		132652E92447BA3B003FDA45 /* AppUpdatedResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdatedResult.swift; sourceTree = "<group>"; };
 		138018F022FC7D82008FC6D4 /* Updates+UIDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Updates+UIDevice.swift"; sourceTree = "<group>"; };
 		138B3513220B187200BB506A /* Versions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Versions.swift; sourceTree = "<group>"; };
 		138B3516220B18A000BB506A /* Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Build.swift; sourceTree = "<group>"; };
@@ -373,7 +373,7 @@
 				138B3518220B195400BB506A /* Version.swift */,
 				138B351A220B1FF600BB506A /* VersionSortOptions.swift */,
 				138B3513220B187200BB506A /* Versions.swift */,
-				132652E92447BA3B003FDA45 /* VersionJournalingServiceResult.swift */,
+				132652E92447BA3B003FDA45 /* AppUpdatedResult.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -628,7 +628,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0930;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1300;
 				TargetAttributes = {
 					74E1BB52F0AD1D37095FC573FC8B2E15 = {
 						LastSwiftMigration = 1130;
@@ -719,7 +719,7 @@
 				132652D524477493003FDA45 /* AutomaticUpdateResolutionService.swift in Sources */,
 				13DFA53421DAC6F100CD9AEA /* VersionComparator.swift in Sources */,
 				E0B6D50EB1766F119A96ADD519D4D12D /* Updates-dummy.m in Sources */,
-				132652EA2447BA3B003FDA45 /* VersionJournalingServiceResult.swift in Sources */,
+				132652EA2447BA3B003FDA45 /* AppUpdatedResult.swift in Sources */,
 				132652CE244773DB003FDA45 /* UpdateResolutionService.swift in Sources */,
 				138B351B220B1FF600BB506A /* VersionSortOptions.swift in Sources */,
 				132652D324477460003FDA45 /* ManualUpdateResolutionService.swift in Sources */,
@@ -779,7 +779,6 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "Target Support Files/Pods-Updates_Example/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-Updates_Example/Pods-Updates_Example.modulemap";
@@ -816,9 +815,8 @@
 				GCC_PREFIX_HEADER = "Target Support Files/Updates/Updates-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/Updates/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.6.0;
 				MODULEMAP_FILE = "Target Support Files/Updates/Updates.modulemap";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rwbutler.Updates;
 				PRODUCT_MODULE_NAME = Updates;
@@ -861,6 +859,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -888,7 +887,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -915,9 +914,8 @@
 				GCC_PREFIX_HEADER = "Target Support Files/Updates/Updates-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/Updates/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.6.0;
 				MODULEMAP_FILE = "Target Support Files/Updates/Updates.modulemap";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rwbutler.Updates;
 				PRODUCT_MODULE_NAME = Updates;
@@ -952,7 +950,6 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "Target Support Files/Pods-Updates_Example/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-Updates_Example/Pods-Updates_Example.modulemap";
@@ -999,6 +996,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1023,7 +1021,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -1048,7 +1046,6 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "Target Support Files/Pods-Updates_Tests/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-Updates_Tests/Pods-Updates_Tests.modulemap";
@@ -1081,7 +1078,6 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "Target Support Files/Pods-Updates_Tests/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-Updates_Tests/Pods-Updates_Tests.modulemap";

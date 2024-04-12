@@ -8,9 +8,32 @@
 import Foundation
 
 struct NeverUpdateResolutionService: UpdateResolutionService {
-    
-    func checkForUpdates(completion: @escaping (UpdatesResult) -> Void) {
-        onMainQueue(completion)(.none)
+
+    private let configuration: ConfigurationResult
+    private let journalingService: VersionJournalingService
+
+    init(configuration: ConfigurationResult, journalingService: VersionJournalingService) {
+        self.configuration = configuration
+        self.journalingService = journalingService
     }
-    
+
+    func checkForUpdates(completion: @escaping (UpdatesResult) -> Void) {
+        guard let versionString = configuration.bundleVersion else {
+            onMainQueue(completion)(
+                .none(
+                    AppUpdatedResult(isFirstLaunchFollowingInstall: false, isFirstLaunchFollowingUpdate: false)
+                )
+            )
+            return
+        }
+        let isUpdated = journalingService.registerBuild(
+            versionString: versionString,
+            buildString: configuration.buildString,
+            comparator: configuration.comparator
+        )
+        onMainQueue(completion)(
+            .none(isUpdated)
+        )
+    }
+
 }

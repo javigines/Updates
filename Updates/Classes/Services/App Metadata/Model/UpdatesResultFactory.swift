@@ -16,39 +16,92 @@ struct UpdatesResultFactory: Factory {
         let operatingSystemVersion: String
     }
     
-    private let bundleVersion: String
     private let configuration: ConfigurationResult
+    private let journalingService: VersionJournalingService
     private let operatingSystemVersion: String
     
-    init(configuration: ConfigurationResult, bundleVersion: String, operatingSystemVersion: String) {
-        self.bundleVersion = bundleVersion
+    init(
+        configuration: ConfigurationResult,
+        journalingService: VersionJournalingService,
+        operatingSystemVersion: String
+    ) {
         self.configuration = configuration
+        self.journalingService = journalingService
         self.operatingSystemVersion = operatingSystemVersion
     }
     
     func manufacture() -> UpdatesResult {
-        guard let appStoreVersion = configuration.version else {
-            return .none
+        guard let bundleVersion = configuration.bundleVersion else {
+            return .none(
+                AppUpdatedResult(isFirstLaunchFollowingInstall: false, isFirstLaunchFollowingUpdate: false)
+            )
         }
-        let isUpdateAvailable = isUpdateAvailableForSystemVersion()
+        if let minRequiredAppVersion = configuration.minRequiredAppVersion {
+            if let minVersionUpdateAvailable = minVersionRequirement(
+                minAppVersion: minRequiredAppVersion,
+                bundleVersion: bundleVersion,
+                configuration: configuration,
+                updateType: .hard
+            ) {
+                return minVersionUpdateAvailable
+            }
+        }
+        if let minOptionalAppVersion = configuration.minOptionalAppVersion {
+            if let minVersionUpdateAvailable = minVersionRequirement(
+                minAppVersion: minOptionalAppVersion,
+                bundleVersion: bundleVersion,
+                configuration: configuration,
+                updateType: .soft
+            ) {
+                return minVersionUpdateAvailable
+            }
+        }
+        guard let appStoreVersion = configuration.latestVersion,
+              let minRequiredOSVersion = configuration.minOSRequired else {
+                  return .none(
+                    AppUpdatedResult(isFirstLaunchFollowingInstall: false, isFirstLaunchFollowingUpdate: false)
+                  )
+              }
+        
+        let isAppUpdated = self.isAppUpdated(bundleVersion: bundleVersion, configuration: configuration)
+        let isUpdateAvailable = isUpdateAvailableForSystemVersion(
+            appStoreVersion: appStoreVersion,
+            bundleVersion: bundleVersion,
+            comparator: configuration.comparator,
+            minRequiredOSVersion: minRequiredOSVersion
+        )
+        let appStoreURL = configuration.appStoreId.flatMap { appStoreId in
+            Updates.appStoreURL(
+                appStoreId: appStoreId,
+                countryCode: Updates.countryCode,
+                productName: Updates.productName
+            )
+        }
         let update = Update(
+            appStoreId: configuration.appStoreId,
+            appStoreURL: appStoreURL,
+            isUpdated: isAppUpdated,
             newVersionString: appStoreVersion,
             releaseNotes: configuration.releaseNotes,
-            shouldNotify: isUpdateAvailable
+            shouldNotify: isUpdateAvailable,
+            updateType: configuration.updateType
         )
-        return (isUpdateAvailable) ? .available(update) : .none
+        let shouldNotify = self.shouldNotify(for: appStoreVersion)
+        let willNotify = (isUpdateAvailable && shouldNotify)
+        || (configuration.notificationMode == .withoutAvailableUpdate)
+        return willNotify ? .available(update) : .none(isAppUpdated)
     }
     
 }
 
 private extension UpdatesResultFactory {
     
-    private func isUpdateAvailableForSystemVersion() -> Bool {
-        guard let appStoreVersion = configuration.version,
-            let minRequiredOSVersion = configuration.minOSRequired else {
-                return false
-        }
-        let comparator = configuration.comparator
+    private func isUpdateAvailableForSystemVersion(
+        appStoreVersion: String,
+        bundleVersion: String,
+        comparator: VersionComparator,
+        minRequiredOSVersion: String
+    ) -> Bool {
         let isNewVersionAvailable = updateAvailable(
             appVersion: bundleVersion,
             apiVersion: appStoreVersion,
@@ -59,6 +112,59 @@ private extension UpdatesResultFactory {
             requiredVersionString: minRequiredOSVersion
         )
         return isNewVersionAvailable && isRequiredOSAvailable
+    }
+    
+    private func isAppUpdated(bundleVersion: String, configuration: ConfigurationResult) -> AppUpdatedResult {
+        return journalingService.registerBuild(
+            versionString: bundleVersion,
+            buildString: configuration.buildString,
+            comparator: configuration.comparator
+        )
+    }
+    
+    private func minVersionRequirement(
+        minAppVersion: String,
+        bundleVersion: String,
+        configuration: ConfigurationResult,
+        updateType: UpdateType
+    ) -> UpdatesResult? {
+        let isMinVersionUpdateAvailable = Updates.compareVersions(
+            lhs: bundleVersion, // version of the currently installed app.
+            rhs: minAppVersion, // specified min version requirement.
+            comparator: .patch  // compare using all components of the semantic version number.
+        ) == .orderedAscending
+        guard isMinVersionUpdateAvailable else {
+            return nil
+        }
+        let isAppUpdated = self.isAppUpdated(bundleVersion: bundleVersion, configuration: configuration)
+        let appStoreURL = configuration.appStoreId.flatMap { appStoreId in
+            Updates.appStoreURL(
+                appStoreId: appStoreId,
+                countryCode: Updates.countryCode,
+                productName: Updates.productName
+            )
+        }
+        let update = Update(
+            appStoreId: configuration.appStoreId,
+            appStoreURL: appStoreURL,
+            isUpdated: isAppUpdated,
+            newVersionString: minAppVersion,
+            releaseNotes: configuration.releaseNotes,
+            shouldNotify: true,
+            updateType: updateType
+        )
+        return .available(update)
+    }
+    
+    /// Check whether we've notified the user about this version already.
+    private func shouldNotify(for version: String) -> Bool {
+        let notificationCount = journalingService.notificationCount(for: version)
+        let notificationMode = configuration.notificationMode
+        if notificationCount < notificationMode.notificationCount {
+            journalingService.incrementNotificationCount(for: version)
+            return true
+        }
+        return false
     }
     
     /// Determines whether the required version of iOS is available on the current device.

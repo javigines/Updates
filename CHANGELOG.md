@@ -4,6 +4,48 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - TBC
+### Changed
+- Base deployment target updated from iOS 9.3 to iOS 11.0 in-line with Xcode 14 support.
+
+## [1.6.1] - 2022-09-26
+### Changed
+- Added a public `init` for `UpdatesResult` to make unit testing easier in consumer projects.
+
+## [1.6.0] - 2021-10-10
+### Added
+- Added another `promptToUpdate` function which does not require an `UpdatesResult` object which means that the function can be used without having to pass an `UpdatesResult` object around the calling app.
+- `UpdatesResult` now has the App Store URL for the calling app if it is possible to form it from the required parameters.
+
+## [1.5.0] - 2021-10-05
+### Added
+- Added properties `minOptionalAppVersion` and `minRequiredAppVersion` with the latter taking precedence if both are set to a version string. If the former is set then the update type value will be `.soft` i.e. a soft update whereas if the latter is set then the update type will be `.hard` indicating that a different UI should be displayed to the user. 
+
+Note: At the current time UpdatesUI largely behaves the same for both type of update but for `.hard` updates the cancel button is omitted meaning that the user must press the Update button to quit the dialog - it is recommended to implement your own UI here instead.
+
+## [1.4.0] - 2021-06-16
+### Added
+- Added property `isUpdated` which can be used to determine whether the current app launch is the first one since an install or update has occurred.
+- Added property `updateType` which can be used to determine whether an update is *hard* or *soft*. If using UpdatesUI then for hard updates the cancel button will not be shown when the update dialog is presented.
+### Changed
+- Removed properties `isFirstLaunchFollowingInstall` and `isFirstLaunchFollowingUpdate` as they didn't function without calling `checkForUpdates` first.
+
+## [1.3.1] - 2021-06-15
+### Added
+- Added `useStoreKit` flag.
+
+## [1.3.0] - 2021-02-23
+### Added
+- Added notification mode `.withoutAvailableUpdate` which notifies on every invocation of `checkForUpdates` even where no update is available. Can be used for testing purposes.
+
+## [1.2.4] - 2021-02-22
+### Changed
+- Fixed an issue which would result in the user always being notified about an update regardless of the value of the `NotificationMode` preference.
+
+## [1.2.3] - 2021-02-22
+### Changed
+- Fixed an issue whereby the result could be returned as `.none` where information was missing from the user's `Updates.json` file.
+
 ## [1.2.2] - 2019-12-18
 ### Changed
 - Fixed an issue whereby Updates could falsely indicate that a new app version was available.
